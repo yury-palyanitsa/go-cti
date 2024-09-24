@@ -25,12 +25,12 @@ jobs:
       id: tag
       shell: bash
       run: |
-        LAST_TAG="$(git describe --tags --abbrev=0)%-*"
+        LAST_TAG="$(git describe --tags --abbrev=0)"
         if [[ "${{ env.BRANCH_NAME }}" == "main" ]]; then
-          echo "name=${LAST_TAG}-${{ env.GITHUB_RUN_ID }}" >> $GITHUB_OUTPUT
+          echo "name=${LAST_TAG%-*}-${{ env.GITHUB_RUN_ID }}" >> $GITHUB_OUTPUT
         else
           SAFE_NAME=$(echo "${{ env.BRANCH_NAME }}" | tr '/' '_' | tr '-' '_')
-          echo "name=${LAST_TAG}-${SAFE_NAME}-${{ env.GITHUB_RUN_ID }}" >> $GITHUB_OUTPUT
+          echo "name=${LAST_TAG%-*}-${SAFE_NAME}-${{ env.GITHUB_RUN_ID }}" >> $GITHUB_OUTPUT
         fi
         echo "Generated tag name: $(cat $GITHUB_OUTPUT)"
 
