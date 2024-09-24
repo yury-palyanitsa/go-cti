@@ -27,20 +27,20 @@ jobs:
       run: |
         LAST_TAG="$(git describe --tags --abbrev=0)"
         if [[ "$BRANCH_NAME" == "main" ]]; then
-          echo "name=${LAST_TAG%-*}-${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
+          echo "name=${LAST_TAG%-*}-${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
         else
           SAFE_NAME=$(echo "$BRANCH_NAME" | tr '/' '_' | tr '-' '_')
-          echo "name=${LAST_TAG%-*}-${SAFE_NAME}-${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
+          echo "name=${LAST_TAG%-*}-${SAFE_NAME}-${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
         fi
-        echo "Generated tag name: $(cat $GITHUB_OUTPUT)"
 
     - name: Create release
       id: create_release
-      uses: anzz1/action-create-release@v1
+      uses: yury-palyanitsa/action-create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         draft: false
+        make_latest: false
         tag_name: ${{ steps.tag.outputs.name }}
 
   build-binaries:
