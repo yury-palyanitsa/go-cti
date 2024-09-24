@@ -32,6 +32,7 @@ jobs:
           SAFE_NAME=$(echo "${{ env.BRANCH_NAME }}" | tr '/' '_' | tr '-' '_')
           echo "name=${LAST_TAG}-${SAFE_NAME}-${{ env.GITHUB_RUN_ID }}" >> $GITHUB_OUTPUT
         fi
+        echo "Generated tag name: $(cat $GITHUB_OUTPUT)"
 
     - name: Create release
       id: create_release
