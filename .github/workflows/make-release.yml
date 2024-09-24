@@ -77,7 +77,7 @@ jobs:
       run: | 
         mkdir -p artifacts
         suffix="${{ matrix.os }}-${{ matrix.arch }}"
-        if [ ${{ matrix.os }} -eq "win32" ]; then
+        if [[ "${{ matrix.os }}" == "win32" ]]; then
           suffix="$suffix.exe"
         fi
         go build -o "artifacts/cti-$suffix" ./cmd/cti/cti.go
