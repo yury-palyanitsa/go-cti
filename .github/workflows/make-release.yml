@@ -44,10 +44,13 @@ jobs:
         tag_name: ${{ steps.tag.outputs.name }}
 
   build-binaries:
+    needs:
+    - create-tag
+
     strategy:
       matrix:
         include:
-        - os: win32
+        - os: windows
           arch: amd64
         - os: linux
           arch: amd64
