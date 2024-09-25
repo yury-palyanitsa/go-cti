@@ -55,13 +55,12 @@ jobs:
           const path = require('path');
           const fs = require('fs');
           const { ref, repo } = context;
-          const { data: { id: releaseId } } = await github.rest.repos.getReleaseByTag({
+          const { data: { id: release_id } } = await github.rest.repos.getReleaseByTag({
             owner: repo.owner,
             repo: repo.repo,
             tag: ref.replace('refs/tags/', ''),
           });
           const root = './artifacts';
-          const release_id = '${{ needs.create-tag.outputs.release_id }}';
           const files = fs.readdirSync(root);
           for (const file of files) {
             console.log('uploadReleaseAsset', file);
