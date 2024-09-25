@@ -10,9 +10,6 @@ env:
 
 jobs:
   build-binaries:
-    needs:
-    - create-tag
-
     strategy:
       matrix:
         include:
