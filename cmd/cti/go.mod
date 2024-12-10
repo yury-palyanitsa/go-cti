@@ -3,7 +3,7 @@ module github.com/acronis/go-cti/cmd/cti
 go 1.22.6
 
 require (
-	github.com/acronis/go-cti/metadata v0.25.0
+	github.com/acronis/go-cti/metadata v0.26.0
 	github.com/acronis/go-stacktrace v0.4.0
 	github.com/acronis/go-stacktrace/slogex v0.3.0
 	github.com/dusted-go/logging v1.3.0
@@ -15,7 +15,7 @@ require (
 require (
 	github.com/acronis/go-cti v1.0.0 // indirect
 	github.com/acronis/go-cti/metadata/ramlx v1.0.0 // indirect
-	github.com/acronis/go-raml v0.15.0 // indirect
+	github.com/acronis/go-raml v0.16.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
