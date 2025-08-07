@@ -1,6 +1,7 @@
 package metadata
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"github.com/acronis/go-cti/metadata/attribute_selector"
 	"github.com/acronis/go-cti/metadata/consts"
 	"github.com/acronis/go-cti/metadata/jsonschema"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/tidwall/gjson"
 	"github.com/xeipuuv/gojsonschema"
 )
@@ -814,6 +816,10 @@ func (e *EntityType) GetMergedTraits() map[string]any {
 	mergedTraits := make(map[string]any)
 	root := e
 	for root != nil {
+		// Stop the loop prematurely if encountered a type with traits schema
+		if root.TraitsSchema != nil {
+			break
+		}
 		if root.Traits != nil {
 			for k, v := range root.Traits {
 				if _, exists := mergedTraits[k]; !exists {
@@ -842,6 +848,54 @@ func (e *EntityType) ValidateBytes(j []byte) error {
 		return fmt.Errorf("get schema validator: %w", err)
 	}
 	return jsonschema.ValidateWrapper(s, gojsonschema.NewBytesLoader(j))
+}
+
+func (e *EntityType) Unmarshal(j []byte, out any) error {
+	s, err := e.GetSchemaValidator()
+	if err != nil {
+		return fmt.Errorf("get schema validator: %w", err)
+	}
+	err = jsonschema.DecodeJSONUsingNumber(bytes.NewReader(j), out)
+	if err != nil {
+		return fmt.Errorf("decode json using number: %w", err)
+	}
+	err = jsonschema.ValidateWrapper(s, gojsonschema.NewRawLoader(out))
+	if err != nil {
+		return fmt.Errorf("validate wrapper: %w", err)
+	}
+	return nil
+}
+
+func (e *EntityType) UnmarshalStructured(j []byte, out any) error {
+	s, err := e.GetSchemaValidator()
+	if err != nil {
+		return fmt.Errorf("get schema validator: %w", err)
+	}
+	var v any
+	err = jsonschema.DecodeJSONUsingNumber(bytes.NewReader(j), v)
+	if err != nil {
+		return fmt.Errorf("decode json using number: %w", err)
+	}
+	err = jsonschema.ValidateWrapper(s, gojsonschema.NewRawLoader(v))
+	if err != nil {
+		return fmt.Errorf("validate wrapper: %w", err)
+	}
+
+	decoderConfig := &mapstructure.DecoderConfig{
+		Result:           out,
+		WeaklyTypedInput: true,
+	}
+
+	decoder, err := mapstructure.NewDecoder(decoderConfig)
+	if err != nil {
+		return fmt.Errorf("create decoder: %w", err)
+	}
+	err = decoder.Decode(v)
+	if err != nil {
+		return fmt.Errorf("decode to struct: %w", err)
+	}
+
+	return mapstructure.Decode(v, out)
 }
 
 // Validate validates the values against the entity type schema.

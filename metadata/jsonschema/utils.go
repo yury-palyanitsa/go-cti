@@ -1,7 +1,9 @@
 package jsonschema
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 
 	"github.com/acronis/go-stacktrace"
 	"github.com/xeipuuv/gojsonschema"
@@ -107,4 +109,16 @@ func DeepCopySlice(input []any) []any {
 	}
 
 	return output
+}
+
+func DecodeJSONUsingNumber(r io.Reader, document any) error {
+	decoder := json.NewDecoder(r)
+	decoder.UseNumber()
+
+	err := decoder.Decode(&document)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
