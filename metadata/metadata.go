@@ -30,7 +30,11 @@ type EntityInstanceMap map[string]*EntityInstance
 type EntityMap map[string]Entity
 
 // TODO: For future use. Need to create a context and move all creation methods there.
-type MContext struct{}
+type MContext struct {
+	Entity    Entity
+	Entities  Entities
+	EntityMap EntityMap
+}
 
 // PtrReplacer is an interface for objects that can replace their pointers with another object of the same type.
 type PtrReplacer[T any] interface {
@@ -227,6 +231,63 @@ func (k GJsonPath) String() string {
 	return string(k)
 }
 
+// TODO: Implement custom Expression with resolver from metadata entities storage.
+type Expression struct {
+	cachedExpr *cti.Expression
+	isAny      bool
+
+	resolvedEntities EntityMap
+
+	ctx *MContext
+}
+
+func NewExpression(ctx *MContext, cti string, parseFn func(string, ...cti.ParserOption) (cti.Expression, error)) (Expression, error) {
+	if cti == "true" {
+		return Expression{
+			isAny:            true,
+			resolvedEntities: ctx.EntityMap,
+			ctx:              ctx,
+		}, nil
+	}
+	expr, err := parseFn(cti) // TODO: Creates a new parser instance
+	if err != nil {
+		return Expression{}, fmt.Errorf("parse expression %s: %w", cti, err)
+	}
+	return Expression{
+		cachedExpr:       &expr,
+		resolvedEntities: make(EntityMap),
+		ctx:              ctx,
+	}, nil
+}
+
+func (e *Expression) ResolveEntities() (EntityMap, error) {
+	if e.isAny {
+		return e.resolvedEntities, nil
+	}
+	if e.cachedExpr == nil {
+		return nil, fmt.Errorf("expression is nil")
+	}
+	if e.resolvedEntities != nil {
+		return e.resolvedEntities, nil
+	}
+	entities := make(EntityMap)
+	for _, item := range e.ctx.Entities {
+		expr, err := item.Expression()
+		cti := item.GetCTI()
+		if err != nil {
+			return nil, fmt.Errorf("get entity expression: %w", err)
+		}
+		if ok, err := e.cachedExpr.Match(*expr); !ok {
+			if err != nil {
+				return nil, fmt.Errorf("failed to match against %s: %w", cti, err)
+			}
+			continue
+		}
+		entities[cti] = item
+	}
+	return entities, nil
+}
+
 // Base properties for all CTI entities.
 // Provides a common implementation for Entity interface. Some methods are not implemented
 // and are overridden by EntityType and EntityInstance structs.
@@ -262,7 +323,7 @@ type entity struct {
 	parent *EntityType `json:"-" yaml:"-"` // Parent entity type, if any
 
 	// expression is the parsed CTI expression of the entity.
-	expression *cti.Expression `json:"-" yaml:"-"` // Parsed CTI expression, if any
+	expression Expression `json:"-" yaml:"-"` // Parsed CTI expression, if any
 
 	// ctx is current unused.
 	ctx *MContext `json:"-" yaml:"-"`
@@ -428,17 +489,14 @@ func (e *entity) IsFinal() bool {
 
 // Expression returns the parsed CTI expression of the entity.
 func (e *entity) Expression() (*cti.Expression, error) {
-	if e.expression == nil {
-		if e.CTI == "" {
-			return nil, errors.New("entity CTI is empty")
-		}
-		expr, err := cti.ParseIdentifier(e.CTI)
+	if e.expression.cachedExpr == nil {
+		expr, err := NewExpression(e.ctx, e.CTI, cti.ParseIdentifier)
 		if err != nil {
 			return nil, fmt.Errorf("parse expression %s: %w", e.CTI, err)
 		}
-		e.expression = &expr
+		e.expression = expr
 	}
-	return e.expression, nil
+	return e.expression.cachedExpr, nil
 }
 
 // IsA checks if the entity is a subtype of the given EntityType.
