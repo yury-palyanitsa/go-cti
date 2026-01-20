@@ -1,0 +1,325 @@
+categories:
+  CTI:
+    - question: What is a Cross-Domain Typed Identifier (CTI)?
+      ground_truth: A conventional system that provides a structured, standardized approach for uniquely identifying data types, instances and their relationships across multi-service, multi-vendor, multi-platform and multi-application environments. By encoding essential information about vendor, package, and version, CTI ensures consistent, scalable identification of data types and instances in shared data storage, API objects, and documentation.
+    - question: What is CTI instance?
+      ground_truth: A static data object that conforms to a parent domain type schema and specifies its behavior.
+    - question: What is CTI type?
+      ground_truth: An extensible domain type that carries a data schema and, optionally, traits schema and traits that control its behavior.
+    - question: What is CTI metadata?
+      ground_truth: A declarative domain modeling language that defines domain types, inheritance, constraints, and configurable behavior using fields like cti, final, access, display_name, description, schema, values, traits_schema, traits, and annotations.
+    - question: Can I define multiple trait schemas in CTI metadata?
+      ground_truth: No, a CTI type can have only one traits_schema that defines the structure for traits.
+    - question: Can derived type modify traits schema?
+      ground_truth: No, traits schema is inherited from the parent type to the derived type but cannot be modified.
+    - question: Can derived type re-define traits?
+      ground_truth: Yes, traits are inherited from the parent type to the derived type and can be overridden by the derived type.
+    - question: How JSON Schema is related to CTI metadata?
+      ground_truth: JSON Schema is one of the supported data type languages for defining CTI type schemas. CTI integrates with JSON Schema and provides additional capabilities like inheritance, references, and traits on top of it.
+    - question: How RAML is related to CTI metadata?
+      ground_truth: RAMLx 1.0 is an extension of RAML 1.0 that can be used to express CTI semantics and describe domain types and instances using RAML annotations and user-defined facets.
+    - question: Can I use JSON Schema to define CTI type?
+      ground_truth: Yes, JSON Schema Draft-7 can be used to define the schema field in CTI type metadata.
+    - question: Can I use OpenAPI to define CTI metadata?
+      ground_truth: The specification does not define OpenAPI as a supported schema language. CTI supports JSON Schema and RAMLx 1.0 for defining type schemas.
+    - question: Can I define my own custom annotations in CTI type?
+      ground_truth: Yes, CTI metadata includes an annotations field where you can define custom annotations as key-value pairs where the key is a path to an annotated property.
+    - question: How CTI metadata can be used by my service?
+      ground_truth: CTI metadata enables services to validate data against schemas, implement dynamic configuration, control access, enforce type relationships, and manage extensible domain models through inheritance and traits.
+    - question: What language is used by CTI?
+      ground_truth: CTI metadata uses YAML 1.2 document format for type and instance definitions. CTI supports JSON Schema and RAMLx 1.0 for defining type schemas.
+    - question: Can I create a CTI instance without CTI type?
+      ground_truth: No, a CTI instance must conform to a parent domain type schema. The instance's CTI identifier extends a type's CTI using the ~ character.
+    - question: How can I use traits?
+      ground_truth: Traits allow you to control the behavior of a CTI type by defining key-value pairs that conform to the traits_schema. Derived types can override inherited traits to customize behavior.
+    - question: What fields exist in CTI metadata, and which of them are required vs optional?
+      ground_truth: cti, final, access, display_name, description, schema, values, traits_schema, traits, annotations
+    - question: What is the precise meaning and constraints of the final flag in CTI metadata, and how does it affect inheritance and extension across vendors?
+      ground_truth: "The final flag in CTI metadata indicates that the type cannot be further extended or inherited by other types. If set to true, no other CTI type can derive from this type, ensuring its structure and behavior remain unchanged across vendors."
+    - question: Are there any fields that must be present for a CTI type but not for an instance (or vice versa), and what are examples?
+      ground_truth: "The `schema` field is required for CTI types to define the structure of instances, while it is not applicable for CTI instances. Conversely, the `values` field is typically used in CTI instances to hold actual data, but it is not required in CTI types."
+    - question: How does data schema inheritance work when a derived CTI type extends a parent type's schema?
+      ground_truth: "When a derived CTI type extends a parent type's schema, it inherits all properties defined in the parent schema. The derived type can add new properties or override existing ones, but it cannot remove properties from the parent schema. This ensures that instances of the derived type are compatible with the parent type while allowing for customization."
+    - question: Where can I find the most up-to-date CTI specification?
+      ground_truth: "https://github.com/acronis/go-cti/blob/main/cti-spec/SPEC.md"
+    - question: Is there a specification for CTI?
+      ground_truth: "There is a specification for CTI at https://github.com/acronis/go-cti/blob/main/cti-spec/SPEC.md."
+    - question: What are the five provisioning states of a CTI entity?
+      ground_truth: "Not provisioned, Not initialized, Disabled, Enabled, Soft-deleted"
+    - question: How do extensions build upon existing functionality?
+      ground_truth: Extensions inherit and customize attributes and processing flows from original types.
+    - question: "How are CTI's used in extension points?"
+      ground_truth: "CTIs identify alert types, Cyber Apps, and function interfaces within extension points."
+    - question: What is the benefit of posting alerts with a CTI?
+      ground_truth: "Posted alerts retain original alert functionality including APIs, UI, aggregation, notifications, and event generation."
+    - question: How do CTIs contribute to the extensibility of the platform?
+      ground_truth: CTIs allow for building an extensible platform by developing Cyber Applications.
+    - question: Where can I find the CTI Version 1.0 Specification?
+      ground_truth: "https://github.com/acronis/go-cti/blob/main/cti-spec/SPEC.md"
+    - question: What are the simplified states of a CTI entity?
+      ground_truth: "Draft, In review, Deployed"
+    - question: 'What happens to a CTI entity in the "In review" state?'
+      ground_truth: 'CTI entity becomes read-only in "In review" state.'
+    - question: 'What happens to a CTI entity in the "Deployed" state?'
+      ground_truth: CTI entity is provisioned and becomes read-only.
+    - question: What controls access to data created using CTI entities?
+      ground_truth: CTI entity provisioning state controls access to data.
+    - question: Why is it important to keep older CTI entity versions linked to newer Application Versions?
+      ground_truth: Preserve access and compatibility of existing data and functionality during application updates.
+    - question: What is the CTI data schemas versioning convention?
+      ground_truth: "CTI data schemas versioning involves major/minor version increments, requiring backward compatibility for minor version changes and client upgrades for major version changes."
+    - question: What does a major version change in CTI signify?
+      ground_truth: Major version change in CTI signifies client upgrade requirement and potential incompatible data schema change.
+    - question: What does a minor version change in CTI signify?
+      ground_truth: A minor version change in CTI signifies backward compatibility with the previous minor version and eventual client upgrade to support new entities.
+    - question: "What information is included in a customer object's CTI?"
+      ground_truth: "id, cti, name, address, country, city address"
+    - question: What does it mean to validate against a requested CTI type?
+      ground_truth: Validating against the requested CTI type means ensuring data conforms to the schema of the specific CTI version requested.
+    - question: What is the compatibility policy for CTI schemas between minor versions of the same major version?
+      ground_truth: CTI schemas must be fully compatible between minor versions of the same major version.
+    - question: What is the compatibility policy between major versions of CTI schemas?
+      ground_truth: Compatibility between major versions of CTI schemas is not guaranteed and requires client support for transitive compatibility.
+    - question: Why are CTI Metadata models required to use a closed content model?
+      ground_truth: CTI Metadata models require a closed content model to avoid validation failures from unexpected properties.
+    - question: What does `cti.castable` mean and what is its requirement?
+      ground_truth: "`cti.castable` annotates CTI types and requires a default value if true."
+    - question: When does a change in CTI annotations require a version change?
+      ground_truth: "Changes to `cti.id`, `cti.reference`, `cti.schema`, `cti.l10n`, or `cti.asset` require schema version changes."
+    - question: What happens when the `cti.id` annotation changes?
+      ground_truth: Increase the minor schema version.
+    - question: What happens when the `cti.schema` annotation changes?
+      ground_truth: Changing `cti.schema` requires updating major/minor schema versions based on major/minor version changes or CTI type changes.
+    - question: What happens when the `cti.asset` annotation changes?
+      ground_truth: Increase minor schema version when `cti.asset` changes.
+    - question: What is the compatibility of CTI references?
+      ground_truth: CTI references are forward-compatible from the specified version up to the next major version.
+    - question: How do CTIs relate to access control?
+      ground_truth: 'CTI provisioning state controls data access, requiring "Enabled" state for access and restricting it for other states; API client tokens need specific claims for DTS entity/function access.'
+    - question: Why are CTIs important for dynamic access policies?
+      ground_truth: "CTIs enable access control to tenant data of a specific type, supporting dynamic access policies."
+    - question: What is the significance of the major version in type casting?
+      ground_truth: Type version casting must be performed within the same major version.
+    - question: "What value is assumed if a schema doesn't specify a default?"
+      ground_truth: An empty value is assumed.
+    - question: "What does it mean for a type to be 'castable'?"
+      ground_truth: CTI types must have the `cti.castable` annotation to be castable.
+    - question: What does it mean when a field is introduced in a newer version?
+      ground_truth: "Newer versions must add fields to data objects when casting up, populating them with default values (or empty values if no default is specified)."
+    - question: What are writer schemas and how do they differ from reader schemas?
+      ground_truth: "Writer schemas enforce strict writing via a closed content model, while reader schemas allow flexible reading via an open content model."
+    - question: 'What is meant by "instances compatibility"?'
+      ground_truth: New instance values must include the same values as the old instance.
+    - question: How should trait schemas be versioned?
+      ground_truth: Trait schemas must follow schema compatibility rules and bump the CTI version.
+    - question: What is API semantics versioning?
+      ground_truth: "API semantics versioning defines the behavior of an API method, including data acceptance and retrieval."
+    - question: What are the two main API data schema change management strategies?
+      ground_truth: "Strict data schema versioning, Backward compatible data schema versioning"
+    - question: What is dynamic server-side API data schema casting?
+      ground_truth: "Dynamic server-side API data schema casting aligns payloads with client schema versions at runtime by adding/removing fields within the same major version, enabled by default and controlled by a query parameter."
+    - question: What are the two sub-options for dynamic server-side API data schema casting?
+      ground_truth: "transform, not cast"
+    - question: What is the difference between API versioning being aligned with data schema version and not aligned?
+      ground_truth: "API versioning aligned corresponds to data schema version, while not aligned means they are independent and the client handles schema interpretation."
+    - question: What is the recommended API versioning strategy?
+      ground_truth: "API version aligned with data schema version, supporting dynamic data types/schema casting and data transformation."
+    - question: What is the difference between REST APIs and RPC-like APIs in this context?
+      ground_truth: RPC-like APIs handle object versions individually when the service API is not aligned with the data schema version.
+    - question: What is the relationship between APIs and data types in versioning?
+      ground_truth: "API versioning includes both semantic versioning and data type/schema versioning, with data type changes often requiring new API versions."
+    - question: What concerns does versioning address regarding compatibility?
+      ground_truth: Versioning manages compatibility by defining rules for data types and handling schema changes to minimize disruption.
+    - question: What is type version casting?
+      ground_truth: Type version casting adds or removes fields from a payload at runtime to handle different data schema versions.
+    - question: Can a client disable type version casting?
+      ground_truth: Clients can disable type version casting.
+    - question: What happens if type version casting is performed across major versions?
+      ground_truth: Type version casting is not possible across major versions.
+    - question: 'What does "backward compatible data schema versioning" mean?'
+      ground_truth: "New data attributes can be added without changing the API version, but existing attributes should not change type or semantic."
+    - question: Why might consumers be provided with a schema that follows an open content model?
+      ground_truth: forward compatibility for old clients
+    - question: What rules apply to data type compatibility when upgrading schemas?
+      ground_truth: "Data type of the new schema must match the old schema, with specific rules for String, Integer, Number, Boolean, Object, Array, and Union types."
+    - question: What are the specific rules for object property compatibility?
+      ground_truth: "All type properties must match, new optional properties may be added, new required properties cannot be added, old required properties cannot be removed, optional properties can be removed/converted, and properties with `cti.castable` true must have default values."
+    - question: What happens when a new required property is added to an object schema?
+      ground_truth: Adding a new required property to an object schema is not allowed.
+    - question: How package is identified?
+      ground_truth: By `package_id` specified in index.json.
+    - question: Can I limit access to my CTI entity?
+      ground_truth: Yes, using access modifiers.
+    - question: Which access modifiers are available?
+      ground_truth: |
+        - Public - allowed to be referenced by anyone.
+        - Protected - allowed to be referenced in any package of the same vendor.
+        - Private - allowed to be referenced only by the same package.
+    - question: What are the types of entities that can be expressed with CTI?
+      ground_truth: Type, well-known instances, anonymous instances.
+    - question: What is the difference between a CTI type and a CTI instance?
+      ground_truth: A CTI type defines a schema, while a CTI instance is an object conforming to that schema.
+    - question: What is the difference between a well-known instance and an anonymous instance?
+      ground_truth: |
+        Anonymous metadata entity
+        * Entity's ID uses UUID (e.g., cti.a.p.event.v1.0~<uuid>).
+        * Entity is mutable after it was provisioned.
+
+        Well-known metadata entity
+        * Entity uses human-readable identifier (e.g., cti.a.p.event.v1.0~a.p.user_logged_in.v1.0).
+        * Entity is immutable after it was published and/or provisioned.
+    - question: Is it possible to add entities of other vendor in my package?
+      ground_truth: No, you are allowed to define only those entities that belong to this package, according to `package_id` specified
+        in index.json. However, you can **refer** to entities of other vendor if your package specifies a dependency on it.
+    - question: How can I refer other vendor's entities?
+      ground_truth: In order to specify a reference to other vendor's entities, you must specify the vendor's package
+        in `depends` section of your index.json.
+    - question: How can I specify a reference to other CTI entity?
+      ground_truth: You can specify a reference to other CTI entity using `cti.reference` annotation.
+    - question: How can I embed schema of other CTI type?
+      ground_truth: You can embed schema of other CTI type using `cti.schema` annotation.
+    - question: What is the difference between `cti.reference` and `cti.schema`?
+      ground_truth: "`cti.reference` creates a reference to another CTI entity, while `cti.schema` embeds the schema of another CTI entity directly into the current entity."
+    - question: Can I use both `cti.reference` and `cti.schema` in the same CTI type?
+      ground_truth: Yes, you can use both `cti.reference` and `cti.schema` in the same CTI type.
+    - question: How do I validate my package?
+      ground_truth: go-cti is recommended to validate CTI package.
+    - question: Does go-cti implement package management?
+      ground_truth: Yes, go-cti implements package management.
+    - question: Where can I find go-cti?
+      ground_truth: https://github.com/acronis/go-cti
+    - question: Does it support package caching?
+      ground_truth: Yes, go-cti supports package caching.
+    - question: Where cached packages are stored?
+      ground_truth: |
+        Cache location is specified by the `CTIROOT` environment variable. If not set, the default location is:
+
+        * On Linux/macOS, `$USER/.cti`.
+        * On Windows, `%USERPROFILE%/.cti`.
+    - question: Which versioning scheme is used by package manager?
+      ground_truth: |
+        * Semantic version tag provided by version control system.
+        * If no semantic version tag is available, By a pseudo-version.
+    - question: Are CTI types overridable?
+      ground_truth: By default, CTI types are not overridable. However, you can make a CTI type overridable by setting `cti.overridable` annotation to true.
+
+  RAMLx:
+    - question: What is RAMLx?
+      ground_truth: RAMLx is an extension of RAML 1.0 that includes additional annotations and conventions for defining CTI entities.
+    - question: What is a closed content model?
+      ground_truth: A model that disallows additional properties not defined in the schema.
+    - question: What is an open content model?
+      ground_truth: A model that allows for additional properties not defined in the schema.
+    - question: How to define a CTI type using RAMLx?
+      ground_truth: |
+        Using the `(cti.cti)` annotation in a RAML type definition. Example:
+
+        ```yaml
+        #%RAML 1.0 Library
+
+        uses:
+          cti: cti.raml
+
+        types:
+          Message:
+            # Defines a CTI type named cti.a.p.message.v1.0.
+            (cti.cti): cti.a.p.message.v1.0
+            (cti.final): false
+            properties:
+              payload: # An object with arbitrary properties
+                type: object
+                (cti.overridable): true
+        ```
+    - question: How to define a CTI instance using RAMLx?
+      ground_truth: |
+        By defining a CTI type with a property marked with `(cti.id)` annotation, using the `annotationTypes` and defining an annotation on the document level. Example:
+
+        ```yaml
+        #%RAML 1.0 Library
+
+        uses:
+          cti: cti.raml
+
+        annotationTypes:
+          # Define a typed annotation.
+          # The type must be an array of CTI type.
+          Messages: MessageSettings[]
+
+        # Derive instances of the Message type
+        (MessageSettings):
+          # Since the instance is derived from the Message type, it's CTI starts with cti.a.p.message_configuration.v1.0
+          - id: cti.a.p.message_configuration.v1.0~a.p.weather_message.v1.0
+            settings:
+              format: application/json
+          - id: cti.a.p.message_configuration.v1.0~a.p.timer_message.v1.0
+            settings:
+              format: application/xml
+
+        types:
+          MessageSettings:
+            # Defines a CTI type named cti.a.p.message_configuration.v1.0.
+            (cti.cti): cti.a.p.message_configuration.v1.0
+            (cti.final): false
+            properties:
+              id:
+                type: cti.CTI
+                # Specifies that the `id` property may be used as an identifier when deriving an instance.
+                (cti.id): true
+              settings:
+                format:
+                  type: string
+                  enum: ['application/json', 'application/xml']
+        ```
+    - question: How to define CTI traits using RAMLx?
+      ground_truth: |
+        Using user-defined facets with `cti-traits` facet. Example:
+
+        ```yaml
+        #%RAML 1.0 Library
+
+        uses:
+          cti: cti.raml
+
+        types:
+          Message:
+            (cti.cti): cti.a.p.message.v1.0
+            facets:
+              cti-traits:
+                properties:
+                  retention: string
+            properties:
+              id: uuid
+              type:
+                type: cti.CTI
+                (cti.type): true
+              payload:
+                type: object
+                (cti.overridable): true
+
+          WeatherForecast:
+            type: Message
+            (cti.cti): cti.a.p.message.v1.0~a.p.weather_forecast.v1.0
+
+            cti-traits:
+              retention: 10d
+
+            properties:
+              payload:
+                date: datetime
+                location: string
+                temperature: number
+        ```
+    - question: How do I reference a type from another package in RAMLx?
+      ground_truth: |
+        Dependent package will be put into `.dep` folder where it will contain RAMLx files.
+        You can reference a type from another package using the `uses` section.
+    - question: How are CTI metadata elements mapped into RAMLx 1.0 constructs (cti.cti annotations, cti-traits facets, etc.), and what are the rules for translation fidelity?
+      ground_truth: |
+        - CTI types are mapped to RAML types with `(cti.cti)` annotation.
+        - CTI instances are defined using types with `(cti.id)` annotation on a property.
+        - CTI traits are represented as facets under `cti-traits`.
+        - The mapping ensures that all CTI metadata elements are accurately represented in RAMLx, maintaining fidelity between the two formats.
+    - question: What tooling exists to validate RAMLx definitions against CTI metadata and to ensure faithful translation between RAMLx and CTI metadata?
+      ground_truth: go-cti is recommended to validate RAMLx definitions against CTI metadata.
+    - question: Which annotation can be used to specify that a property serves as a type discriminator in a RAMLx definition?
+      ground_truth: "`(cti.type)` annotation can be used to specify that a property serves as a type discriminator."
